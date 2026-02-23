@@ -77,8 +77,11 @@ ShellRoot {
                 targetScreen: screenShellContainer.modelData
             }
 
-            ScreenCorners {
-                screen: screenShellContainer.modelData
+            Loader {
+                active: Config.theme.enableCorners && Config.roundness > 0
+                sourceComponent: ScreenCorners {
+                    screen: screenShellContainer.modelData
+                }
             }
 
             // Exclusive zone reservations
@@ -278,14 +281,23 @@ ShellRoot {
         id: serviceInitializer
 
         Component.onCompleted: {
+            // Critical services — init immediately (next tick)
             Qt.callLater(() => {
-                // Trigger service creation
-                let _ = NightLightService.active;
-                _ = GameModeService.toggled;
-                _ = CaffeineService.inhibit;
+                let _ = CaffeineService.inhibit;
                 _ = IdleService.lockCmd; // Force init
                 _ = GlobalShortcuts.appId; // Force init (IPC pipe listener)
             });
+        }
+
+    }
+
+    // Non-critical services — defer 2s after startup
+    Timer {
+        interval: 2000
+        running: true
+        onTriggered: {
+            let _ = NightLightService.active;
+            _ = GameModeService.toggled;
         }
     }
 }

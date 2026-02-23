@@ -530,10 +530,16 @@ Singleton {
         weatherProcess.running = true;
     }
 
+    Timer {
+        id: startupDelay
+        interval: 2000
+        running: true
+        onTriggered: updateWeather()
+    }
+
     Component.onCompleted: {
         var now = new Date();
         currentHour = now.getHours() + now.getMinutes() / 60;
         _initialized = true;
-        Qt.callLater(() => { updateWeather(); });
     }
 }
