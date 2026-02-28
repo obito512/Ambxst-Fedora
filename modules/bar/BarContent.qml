@@ -4,7 +4,6 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Widgets
 import Quickshell.Wayland
-import Quickshell.Hyprland
 import qs.modules.bar.workspaces
 import qs.modules.theme
 import qs.modules.bar.clock
@@ -39,7 +38,7 @@ Item {
     property bool pinned: Config.bar?.pinnedOnStartup ?? true
 
     // Monitor reference and reference to toplevels on monitor
-    readonly property var hyprlandMonitor: Hyprland.monitorFor(screen)
+    readonly property var hyprlandMonitor: AxctlService.monitorFor(screen)
     readonly property var toplevels: hyprlandMonitor.activeWorkspace.toplevels.values
 
     // Fullscreen detection - check if a toplevel is fullscreen on this screen

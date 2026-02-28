@@ -3,7 +3,6 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
-import Quickshell.Hyprland
 import Quickshell.Io
 import Quickshell.Widgets
 import qs.modules.theme
@@ -16,7 +15,7 @@ Item {
     id: workspacesWidget
     required property var bar
     required property string orientation
-    readonly property HyprlandMonitor monitor: Hyprland.monitorFor(bar.screen)
+    readonly property var monitor: AxctlService.monitorFor(bar.screen)
     readonly property Toplevel activeWindow: ToplevelManager.activeToplevel
 
     readonly property int workspaceGroup: Math.floor((monitor?.activeWorkspace?.id - 1 || 0) / Config.workspaces.shown)
@@ -41,7 +40,7 @@ Item {
     function updateWorkspaceOccupied() {
         if (Config.workspaces.dynamic) {
             // Get occupied workspace IDs using the precomputed occupation map, sorted and limited by 'shown'
-            const occupiedIds = Hyprland.workspaces.values.filter(ws => HyprlandData.workspaceOccupationMap[ws.id]).map(ws => ws.id).sort((a, b) => a - b).slice(0, Config.workspaces.shown);
+            const occupiedIds = AxctlService.workspaces.values.filter(ws => HyprlandData.workspaceOccupationMap[ws.id]).map(ws => ws.id).sort((a, b) => a - b).slice(0, Config.workspaces.shown);
 
             // Always include active workspace, even if empty
             const activeId = monitor?.activeWorkspace?.id || 1;
@@ -124,7 +123,7 @@ Item {
     Component.onCompleted: updateTimer.restart()
 
     Connections {
-        target: Hyprland.workspaces
+        target: AxctlService.workspaces
         function onValuesChanged() {
             updateTimer.restart();
         }
@@ -175,9 +174,9 @@ Item {
     WheelHandler {
         onWheel: event => {
             if (event.angleDelta.y < 0)
-                Hyprland.dispatch(`workspace r+1`);
+                AxctlService.dispatch(`workspace r+1`);
             else if (event.angleDelta.y > 0)
-                Hyprland.dispatch(`workspace r-1`);
+                AxctlService.dispatch(`workspace r-1`);
         }
         acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
     }
@@ -187,7 +186,7 @@ Item {
         acceptedButtons: Qt.BackButton
         onPressed: event => {
             if (event.button === Qt.BackButton) {
-                Hyprland.dispatch(`togglespecialworkspace`);
+                AxctlService.dispatch(`togglespecialworkspace`);
             }
         }
     }
@@ -423,7 +422,7 @@ Item {
                 id: button
                 property int workspaceValue: getWorkspaceId(index)
                 Layout.fillHeight: true
-                onPressed: Hyprland.dispatch(`workspace ${workspaceValue}`)
+                onPressed: AxctlService.dispatch(`workspace ${workspaceValue}`)
                 width: workspaceButtonWidth
 
                 background: Item {
@@ -554,7 +553,7 @@ Item {
                 id: buttonVert
                 property int workspaceValue: getWorkspaceId(index)
                 Layout.fillWidth: true
-                onPressed: Hyprland.dispatch(`workspace ${workspaceValue}`)
+                onPressed: AxctlService.dispatch(`workspace ${workspaceValue}`)
                 height: workspaceButtonWidth
 
                 background: Item {
