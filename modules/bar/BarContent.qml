@@ -730,7 +730,6 @@ Item {
                                 endRadius: root.outerRadius
                             }
                         }
-                    }
 
                         ControlsButton {
                             id: controlsButtonVert
@@ -769,3 +768,4 @@ Item {
             }
         }
     }
+}
