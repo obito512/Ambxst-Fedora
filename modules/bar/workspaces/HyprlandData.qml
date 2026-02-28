@@ -17,7 +17,7 @@ Singleton {
     property var workspaceWindowsMap: ({})
 
     function updateWindowList() {
-        AxctlService.fetchInitialState()
+        // No-op: state is now pushed inline via axctl subscribe events
     }
 
     function updateMaps() {
