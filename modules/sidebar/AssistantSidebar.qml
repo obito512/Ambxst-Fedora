@@ -165,8 +165,9 @@ Item {
             anchors.bottomMargin: root.sidebarMargin
             anchors.leftMargin: GlobalStates.assistantPosition === "left" ? root.sidebarMargin : 0
             anchors.rightMargin: GlobalStates.assistantPosition === "right" ? root.sidebarMargin : 0
-            variant: "bg"
+            variant: root.frameWrapped ? "transparent" : "bg"
 
+            radius: root.frameWrapped ? 0 : (variantConfig.radius !== undefined ? variantConfig.radius : Styling.radius(0))
             ColumnLayout {
                 anchors.fill: parent
                 spacing: 0

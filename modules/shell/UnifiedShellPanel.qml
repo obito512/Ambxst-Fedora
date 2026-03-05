@@ -245,11 +245,13 @@ PanelWindow {
         AssistantSidebar {
             id: assistantSidebar
             targetScreen: unifiedPanel.targetScreen
-            z: 5
+            z: 1
             
             // Respect top/bottom bar reservations so the sidebar doesn't overlap them
             anchors.topMargin: {
-                let margin = (Config.bar?.frameEnabled ?? false) ? (Config.bar?.frameThickness ?? 6) : 0;
+                let frameOn = (Config.bar?.frameEnabled ?? false);
+                let frameWrapped = frameOn && GlobalStates.assistantPinned;
+                let margin = (frameOn && !frameWrapped) ? (Config.bar?.frameThickness ?? 6) : 0;
                 if (unifiedPanel.barEnabled && unifiedPanel.barPosition === "top" && unifiedPanel.barPinned) {
                     margin += unifiedPanel.barTargetHeight + unifiedPanel.barOuterMargin + (unifiedPanel.containBar ? Config.bar.frameThickness : 0);
                 }
@@ -257,7 +259,9 @@ PanelWindow {
             }
             
             anchors.bottomMargin: {
-                let margin = (Config.bar?.frameEnabled ?? false) ? (Config.bar?.frameThickness ?? 6) : 0;
+                let frameOn = (Config.bar?.frameEnabled ?? false);
+                let frameWrapped = frameOn && GlobalStates.assistantPinned;
+                let margin = (frameOn && !frameWrapped) ? (Config.bar?.frameThickness ?? 6) : 0;
                 if (unifiedPanel.barEnabled && unifiedPanel.barPosition === "bottom" && unifiedPanel.barPinned) {
                     margin += unifiedPanel.barTargetHeight + unifiedPanel.barOuterMargin + (unifiedPanel.containBar ? Config.bar.frameThickness : 0);
                 } else if (unifiedPanel.dockEnabled && dockContent.dockPosition === "bottom" && dockContent.pinned) {
