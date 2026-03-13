@@ -1,5 +1,25 @@
 {
   "nodes": {
+    "axctl": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1773380433,
+        "narHash": "sha256-bESytXslo09XNHNkYdoC4xeTT8KhzJqiahMgMtVX6rA=",
+        "owner": "Axenide",
+        "repo": "axctl",
+        "rev": "aaf65f1062e8c657ed4c953ee5547b85daf3e688",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Axenide",
+        "repo": "axctl",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1766902085,
@@ -37,6 +57,7 @@
     },
     "root": {
       "inputs": {
+        "axctl": "axctl",
         "nixpkgs": "nixpkgs",
         "quickshell": "quickshell"
       }
