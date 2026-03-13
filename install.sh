@@ -361,6 +361,22 @@ install_quickshell() {
 	log_success "Quickshell installed to ~/.local/bin/qs"
 }
 
+install_axctl() {
+	if [[ "$DISTRO" == "nixos" ]]; then
+		log_info "Skipping axctl install on NixOS (managed by flake)"
+		return
+	fi
+
+	has_cmd axctl && {
+		log_info "axctl already installed"
+		return
+	}
+
+	log_info "Installing axctl..."
+	curl -L get.axeni.de/axctl | sh
+	log_success "axctl installed"
+}
+
 # === Python Tools ===
 install_python_tools() {
 	[[ "$DISTRO" == "nixos" ]] && return
@@ -444,6 +460,7 @@ setup_launcher() {
 # === Main ===
 migrate_old_paths
 install_dependencies "$1"
+install_axctl
 setup_repo
 install_quickshell
 install_python_tools
