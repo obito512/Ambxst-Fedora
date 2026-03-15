@@ -297,20 +297,24 @@ PanelWindow {
                 perScreen[targetScreen] = path;
                 wallpaperConfig.adapter.perScreenWallpapers = perScreen;
                 
-                // If it happens to be setting the primary monitor's wallpaper, we also run Matugen 
-                // because Matugen color generation is always based on the primary monitor.
-                // However, since we don't strictly enforce which is primary, we will assume 
-                // if it's the primary monitor, we probably want to update currentWall as well.
-                // To keep it simple: if currentWall is empty, we set it.
-                if (!wallpaperConfig.adapter.currentWall) {
+                // If this targetScreen is the primary screen, it must update currentWall
+                // because currentWall is exactly the primary monitor fallback.
+                let isPrimary = false;
+                if (GlobalStates.wallpaperManager && GlobalStates.wallpaperManager.screen) {
+                    isPrimary = (targetScreen === GlobalStates.wallpaperManager.screen.name);
+                }
+
+                if (isPrimary || !wallpaperConfig.adapter.currentWall) {
                     currentIndex = pathIndex;
                     wallpaperConfig.adapter.currentWall = path;
+                    currentWallpaper = path;
                     runMatugenForCurrentWallpaper();
                 }
             } else {
                 // Global fallback target
                 currentIndex = pathIndex;
                 wallpaperConfig.adapter.currentWall = path;
+                currentWallpaper = path;
                 runMatugenForCurrentWallpaper();
             }
             generateLockscreenFrame(path);
@@ -401,11 +405,11 @@ PanelWindow {
             return;
         }
 
-        if (effectiveWallpaper && initialLoadCompleted) {
-            console.log("Running Matugen for current wallpaper:", effectiveWallpaper);
+        if (currentWallpaper && initialLoadCompleted) {
+            console.log("Running Matugen for current wallpaper:", currentWallpaper);
 
-            var fileType = getFileType(effectiveWallpaper);
-            var matugenSource = getColorSource(effectiveWallpaper);
+            var fileType = getFileType(currentWallpaper);
+            var matugenSource = getColorSource(currentWallpaper);
 
             console.log("Using source for matugen:", matugenSource, "(type:", fileType + ")");
 
