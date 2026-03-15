@@ -23,8 +23,9 @@ else
         fi
     done
 fi
+SOCKET="/tmp/ambxst_mpv_socket_${MONITOR}"
 
-MPV_OPTS="no-audio loop hwdec=auto scale=bilinear interpolation=no video-sync=display-resample panscan=1.0 video-scale-x=1.0 video-scale-y=1.0 load-scripts=no input-ipc-server=/tmp/ambxst_mpv_socket"
+MPV_OPTS="no-audio loop hwdec=auto scale=bilinear interpolation=no video-sync=display-resample panscan=1.0 video-scale-x=1.0 video-scale-y=1.0 load-scripts=no input-ipc-server=$SOCKET"
 
 # Si el shader no está vacío y el archivo existe, agregarlo a MPV_OPTS
 if [ -n "$SHADER" ] && [ -f "$SHADER" ]; then

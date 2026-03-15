@@ -40,8 +40,8 @@ PanelWindow {
     property alias tintEnabled: wallpaperAdapter.tintEnabled
     property int thumbnailsVersion: 0
 
-    // QUICKSHELL-GIT: readonly property string mpvShaderDir: Quickshell.cacheDir + "/mpv_shaders"
-    readonly property string mpvShaderDir: Quickshell.env("HOME") + "/.cache/ambxst" + "/mpv_shaders"
+    // QUICKSHELL-GIT: property string mpvShaderDir: Quickshell.cacheDir + "/mpv_shaders_" + (currentScreenName ? currentScreenName : "ALL")
+    property string mpvShaderDir: Quickshell.env("HOME") + "/.cache/ambxst/mpv_shaders_" + (currentScreenName ? currentScreenName : "ALL")
     property string mpvShaderPath: ""
     property bool mpvShaderReady: false
 
@@ -397,7 +397,8 @@ PanelWindow {
         }
     }
 
-    property string mpvSocket: "/tmp/ambxst_mpv_socket"
+    // property string mpvSocket: "/tmp/ambxst_mpv_socket"
+    property string mpvSocket: "/tmp/ambxst_mpv_socket_" + (currentScreenName ? currentScreenName : "ALL")
 
     function runMatugenForCurrentWallpaper() {
         if (activeColorPreset) {
@@ -461,7 +462,7 @@ PanelWindow {
     }
 
     function updateMpvShader() {
-        if (getFileType(currentWallpaper) !== "video") {
+        if (getFileType(effectiveWallpaper) !== "video") {
             return;
         }
         if (!wallpaperAdapter.tintEnabled) {
@@ -610,6 +611,12 @@ PanelWindow {
     onTintEnabledChanged: {
         console.log("Tint enabled changed to", tintEnabled);
         updateMpvShader();
+    }
+
+    onEffectiveWallpaperChanged: {
+        if (getFileType(effectiveWallpaper) === "video") {
+            shaderUpdateDebounce.restart();
+        }
     }
 
     Component.onCompleted: {
@@ -1198,10 +1205,10 @@ PanelWindow {
         Process {
             id: killMpvpaperProcess
             running: false
-            command: ["pkill", "-f", "mpvpaper"]
+            command: ["pkill", "-f", wallpaper.mpvSocket]
 
             onExited: function (exitCode) {
-                console.log("Killed mpvpaper processes, exit code:", exitCode);
+                console.log("Killed mpvpaper processes on socket", wallpaper.mpvSocket, ", exit code:", exitCode);
             }
         }
 
